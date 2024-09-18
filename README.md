@@ -1,1 +1,1 @@
-My jerney to learning C - the programming language.
+My journey to learning C - the programming language.
