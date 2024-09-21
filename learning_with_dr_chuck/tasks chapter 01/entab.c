@@ -48,49 +48,44 @@ int main(int argc, char const *argv[])
         'a',
         'r',
         'd',
-        '\0'
-    };
+        '\0'};
 
     printf("text_array:~%s\n", text);
 
     while (i < LENGTH && text[i] != '\0')
     {
-        if (text[i] != ' ')
-        {
-            if (TABL <= i - j)
-            {
-                counter = i - j;
-                j++;
-                // printf("counter: %d\n", counter);
-                tabs = counter / TABL;
-                int temp_tabs = tabs;
-                int positions_to_del = 3 * tabs;
-                // printf("tabs: %d\n", tabs);
-                whitespaces = counter % TABL;
-                // printf("whitespaces: %d\n", whitespaces);
 
-                // for replacing every TABL whitespace with tab
-                while (tabs > 0)
-                {
-                    text[j] = '\t';
-                    tabs--;
-                    j++;
-                }
-                while (whitespaces > 0)
-                {
-                    text[j] = '_';
-                    whitespaces--;
-                    j++;
-                }
-                if (temp_tabs > 0)
-                {
-                    move_in_chararray(j, positions_to_del, text, LENGTH);
-                }
-                temp_tabs = 0;
-            }
+        if (text[i] == ' ' && j == 0)
+        {
             j = i;
         }
-        whitespaces = tabs = counter = 0;
+        if (text[i] != ' ' && (j != 0) && (i - j <= TABL))
+        {
+            j = counter = 0;
+        }
+        if (text[i] != ' ' && (j != 0) && (i - j > TABL))
+        {
+            counter = i - j;
+            tabs = counter / TABL;
+            whitespaces = counter % TABL;
+            int places_to_shift = tabs * (TABL - 1);
+            for (size_t i = 0; i < tabs; i++)
+            {
+                text[j] = '\t';
+                j++;
+            }
+            for (size_t i = 0; i < whitespaces; i++)
+            {
+                text[j] = '_';
+                j++;
+            }
+            if (tabs > 0)
+            {
+                move_in_chararray(j, places_to_shift, text, LENGTH);
+            }
+
+            j = counter = 0;
+        }
         i++;
     }
 
