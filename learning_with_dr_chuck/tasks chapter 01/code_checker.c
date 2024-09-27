@@ -221,10 +221,17 @@ int main(int argc, char const *argv[])
     if (right_bracket_error == 1)
     {
         printf("Your code has missing opening brackets!\n");
+        in_line = which_line(lines, &counter);
+        printf("in line:%d\n", in_line);
     }
     else if (stack[0] != '\0')
     {
-        printf("Your code has missing closing brackets!\n");
+        printf("Your code has missing closing brackets...\n");
+        for (size_t i = 0; i < current_stack_length; i++)
+        {
+            in_line = which_line(lines, &stack_address[i]);
+            printf("in line:%d\n", in_line);
+        }
     }
     else
         printf("Your code is about right...\n");
