@@ -5,7 +5,41 @@
 #define STACKSIZE 4096
 #define LINES 65536
 
-int which_line(int lines[LINES], int *counter)
+int count_digits(int number)
+{
+    int counter = 0;
+
+    while (number > 0)
+    {
+        number/=10;
+        counter++;
+    }
+    return counter;
+}
+void print_liner_filler(int lines[], int stack_address[], int i, int line)
+{
+    int index = ((line) - 1) * 2;
+    int start = lines[index];
+    int end = (stack_address[i]) + 10 + count_digits(line);
+    for (i = start; i < end; i++)
+    {
+        printf(" ");
+    }
+    printf("^\n");
+}
+void print_line(int lines[], char file_cache[], int *line)
+{
+    int index = ((*line) - 1) * 2;
+    int start = lines[index];
+    int end = lines[index + 1];
+    for (size_t i = start; i < end; i++)
+    {
+        printf("%c", file_cache[i]);
+    }
+    printf("\n");
+}
+
+int which_line(int lines[], int *counter)
 {
     int in_line = 1, index = 0, counting = 1;
     int position = *counter;
@@ -172,6 +206,7 @@ int main(int argc, char const *argv[])
     char stack[STACKSIZE];
     int stack_address[STACKSIZE];
     int lines[LINES];
+    char line_filler[128];
     int c, counter_stack = 0, counter = 0, current_stack_length = 0, in_line = 0, position_of_bracket = 0;
     int in_comment = 0, relevant_syntax = 0, right_bracket_error = 0;
     char chars_to_check[7] = {'(', ')', '[', ']', '{', '}', '\0'};
@@ -204,9 +239,7 @@ int main(int argc, char const *argv[])
 
         c = filea_cache[counter];
         relevant_syntax = 0;
-        // printf("check char in\n");
         is_in_chars_to_check(&relevant_syntax, c, chars_to_check, &position_of_bracket);
-        // printf("check char out\n");
 
         if (relevant_syntax == 1)
         {
@@ -222,15 +255,18 @@ int main(int argc, char const *argv[])
     {
         printf("Your code has missing opening brackets!\n");
         in_line = which_line(lines, &counter);
-        printf("in line:%d\n", in_line);
+        printf("in line %d: ", in_line);
+        print_line(lines, filea_cache, &in_line);
     }
     else if (stack[0] != '\0')
     {
         printf("Your code has missing closing brackets...\n");
-        for (size_t i = 0; i < current_stack_length; i++)
+        for (int i = 0; i < current_stack_length; i++)
         {
             in_line = which_line(lines, &stack_address[i]);
-            printf("in line:%d\n", in_line);
+            printf("in line %d: ", in_line);
+            print_line(lines, filea_cache, &in_line);
+            print_liner_filler(lines, stack_address, i, in_line);
         }
     }
     else
